@@ -68,6 +68,8 @@ vnoremap < <gv
 let g:ale_fixers = {
             \ 'javascript': ['prettier'],
             \ 'css': ['prettier'],
+            \ 'scss': ['prettier'],
+            \ 'html': ['prettier'],
             \ 'vue': ['prettier'],
             \ 'typescript': ['prettier'],
             \}
