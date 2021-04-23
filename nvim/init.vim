@@ -249,14 +249,19 @@ function! s:RecieveGodotCmd(id, data, event) dict
     call OpenFileInBuffer(msg)
 endfunction
 " let godot_chan_id = jobstart(['/mnt/d/dev/rust/godot_opener/target/release/godot_opener.exe'], {'on_stdout': function('s:RecieveGodotCmd')})
+"
 
-function! SwitchAngular(ng_type)
+function! GetCurrentFileEnding()
     let file = bufname("%")
     let last_dot_pos = strridx(file, ".")
     if last_dot_pos ==# -1
         throw "no file ending found on path: " . file
     endif
-    let ending = file[last_dot_pos:]
+    return [file[last_dot_pos:], last_dot_pos]
+endfunction
+
+function! SwitchAngular(ng_type)
+    let [ending, last_dot_pos] = GetCurrentFileEnding()
     echom file
     if a:ng_type ==# 0 && ending !=# ".ts"
         call OpenFileInBuffer(file[:last_dot_pos] . "ts")
@@ -265,6 +270,16 @@ function! SwitchAngular(ng_type)
     elseif a:ng_type ==# 2 && ending !=# ".scss"
         call OpenFileInBuffer(file[:last_dot_pos] . "scss")
     endif
+endfunction
+
+function! NgOpenComponent()
+    let [ending, ldp] = GetCurrentFileEnding()
+    let component = bufname("%")[:ldp]
+    let html = component . "html"
+    let style = component . "scss"
+    exec "rightbelow vsplit " . html
+    exec "rightbelow split " . style
+    call OpenFileInBuffer(component . "ts")
 endfunction
 
 function! NgGenerateComponent()
@@ -277,6 +292,7 @@ endfunction
 nnoremap <leader>ngt :call SwitchAngular(0)<CR>
 nnoremap <leader>ngh :call SwitchAngular(1)<CR>
 nnoremap <leader>ngs :call SwitchAngular(2)<CR>
+nnoremap <leader>ngo :call NgOpenComponent()<CR>
 " nnoremap <leader>nggc :call NgGenerateComponent()<CR>
 
 
