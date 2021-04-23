@@ -261,6 +261,7 @@ function! GetCurrentFileEnding()
 endfunction
 
 function! SwitchAngular(ng_type)
+    let file = bufname("%")
     let [ending, last_dot_pos] = GetCurrentFileEnding()
     echom file
     if a:ng_type ==# 0 && ending !=# ".ts"
